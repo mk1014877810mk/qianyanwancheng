@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>登录</title>
+</head>
+
+<body>
+  <script src="../lib/jquery.min.js"></script>
+  <script src="../js/common.js"></script>
+  <script>
+    $(function () {
+      var ajaxUrl = common.getUrl();
+      var index = {
+        init: function () {
+          $.ajax({
+            url: ajaxUrl + 'getJsSdkInfo.php',
+            type: 'get',
+            success: function (res) {
+              var json = JSON.parse(res);
+              console.log('获取公众号信息', json);
+              if (json.code == 200) {
+                var state = Math.random().toString().slice(-6);
+                var url = encodeURI('https://dl.broadmesse.net/H5-qianyanwanyu/template/index.html');
+                console.log(url);
+                return;
+               // window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' + json.data.appId + '&redirect_uri=https://dl.broadmesse.net/H5-qianyanwanyu/template/index.html&response_type=code&scope=snsapi_userinfo&state=' + state + '#wechat_redirect';
+              }
+
+
+            }
+          })
+        }
+      }
+
+      index.init();
+    });
+  </script>
+</body>
+
+</html>

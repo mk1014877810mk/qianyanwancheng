@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>听他说</title>
+  <link rel="stylesheet" href="../css/common.css">
+  <link rel="stylesheet" href="../css/hear.css">
+</head>
+
+<body>
+  <div class="nav">
+    <a href="./index.html">&lt;</a>
+  </div>
+  <div class="box">
+
+  </div>
+</body>
+
+<script type="text/html" id="tpl">
+  {{each $data v i}}
+  <div class="list">
+    <div class="left">
+      <img src="../images/header1.png">
+    </div>
+    <div class="right" data-index="{{i}}">
+      <img src="{{v.iSrc}}">
+      <audio onplay="this.currentTime=0" src="{{v.aSrc}}"></audio>
+      <div class="all-time">{{v.duration}}"</div>
+    </div>
+  </div>
+  {{/each}}
+</script>
+
+
+<script src="http://res.wx.qq.com/open/js/jweixin-1.4.0.js"></script>
+<script src="../lib/jquery.min.js"></script>
+<script src="../lib/base.js"></script>
+<script src="../lib/template-web.js"></script>
+<script src="../js/common.js"></script>
+<script src="../js/hear.js"></script>
+
+</html>
