@@ -145,18 +145,21 @@ $(function () {
       });
     },
     send: function (serverId) {
+      var that = this;
       $.ajax({
         url: ajaxUrl + 'getAudio.php',
         type: 'get',
         data: {
           media_id: serverId,
           openid: window.localStorage.getItem('openid'),
-          duration: 30 - time
+          duration: 30 - time,
+          avatarid: window.localStorage.getItem('avatarid'),
         },
         success: function (res) {
-          $('.tips').html(JSON.stringify(res))
+          // $('.tips').html(JSON.stringify(res))
           if (res.code == 200) {
             alert('上传成功！');
+            window.history.go(-1);
           }
         },
         error: function (err) {
@@ -175,7 +178,7 @@ $(function () {
       });
     }
   }
-  
+
   common.getOpenId();
   say.init();
 });

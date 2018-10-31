@@ -21,7 +21,7 @@ $(function () {
             var arr = [];
             res.data.forEach((el, i) => {
               var obj = {};
-              obj.avatar = el.avatar;
+              obj.avatar = '../images/head' + el.avatarid + '.png';
               obj.aSrc = ajaxUrl + el.path;
               obj.duration = el.duration;
               obj.iSrc = imgSrc;
@@ -41,7 +41,7 @@ $(function () {
     clickEvent: function () {
       $('.box').on('click', '.right', function () {
         var index = $(this).data('index');
-        for (var i = 0; i < 3; i++) {
+        for (var i = 0; i < $('audio').length; i++) {
           $('audio')[i].pause();
         };
         if (!play) {
@@ -66,7 +66,7 @@ $(function () {
       });
     }
   }
-  
+
   common.getOpenId();
   hear.init();
 });

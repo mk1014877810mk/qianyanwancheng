@@ -5,10 +5,20 @@ var common = {
   },
   getOpenId: function () {
     var openid = window.localStorage.getItem('openid');
+    var avatarid = window.localStorage.getItem('avatarid');
+    console.log(openid,avatarid);
+    var that = this;
     if (!openid) {
       openid = +new Date();
       window.localStorage.setItem('openid', openid);
     }
+    if (!avatarid) {
+      avatarid = that.random(0, 41);
+      window.localStorage.setItem('avatarid', avatarid);
+    }
+  },
+  random: function (max, min) {
+    return Math.ceil(Math.random() * (max - min)) + min;
   },
   // 获取url参数
   getParams: function (name) {

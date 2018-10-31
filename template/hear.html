@@ -12,7 +12,9 @@
 
 <body>
   <div class="nav">
-    <a href="./index.html">&lt;</a>
+    <a href="./index.html">
+      <img src="../images/back.png" alt="">
+    </a>
   </div>
   <div class="box">
 
@@ -23,7 +25,7 @@
   {{each $data v i}}
   <div class="list">
     <div class="left">
-      <img src="../images/header1.png">
+      <img src="{{v.avatar}}">
     </div>
     <div class="right" data-index="{{i}}">
       <img src="{{v.iSrc}}">
