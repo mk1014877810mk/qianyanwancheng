@@ -4,6 +4,7 @@ $(function () {
   var timer = null;
   var localId = '';
   var serverId = '';
+  var canClick = true;
   var say = {
     init: function () {
       var that = this;
@@ -97,6 +98,8 @@ $(function () {
       });
       // 发送
       $('#fasong').off('click').on('click', function () {
+        if (!canClick) return;
+        canClick = false;
         wx.uploadVoice({
           localId: localId, // 需要上传的音频的本地ID，由stopRecord接口获得
           isShowProgressTips: 1, // 默认为1，显示进度提示
@@ -110,9 +113,12 @@ $(function () {
     },
     start: function (event) {
       event.preventDefault();
+      // $('.tips').text(canClick)
+      if (!canClick) return;
+      canClick = false;
       wx.startRecord({
         success: function () {
-          $('.tips').html('开始录音');
+          // $('.tips').html('开始录音');
           time = 30;
           $('.time').removeClass('hide').html(time);
           $('#luyin').addClass('hide').siblings().removeClass('hide');
@@ -130,17 +136,27 @@ $(function () {
     },
     pause: function (event) {
       event.preventDefault();
+      // $('.tips').text(canClick)
+      if(canClick) return;
       wx.stopRecord({
         success: function (res) {
           localId = res.localId;
-          $('.tips').html('停止成功', res);
+          // $('.tips').html('停止成功', res);
           $('.time').addClass('hide');
           $('#top_img').attr('src', '../images/luyin.png');
           $('.bottom-bottom').removeClass('hide').siblings().addClass('hide');
           clearInterval(timer);
+          canClick = true;
+          // $('.tips').text(canClick)
         },
         fail: function (err) {
           console.log('停止失败', err);
+          $('.time').addClass('hide');
+          $('#top_img').attr('src', '../images/luyin.png');
+          $('.bottom-bottom').removeClass('hide').siblings().addClass('hide');
+          clearInterval(timer);
+          canClick = true;
+          // $('.tips').text(canClick)
         }
       });
     },
@@ -156,6 +172,7 @@ $(function () {
           avatarid: window.localStorage.getItem('avatarid'),
         },
         success: function (res) {
+          canClick = true;
           // $('.tips').html(JSON.stringify(res))
           if (res.code == 200) {
             alert('上传成功！');
