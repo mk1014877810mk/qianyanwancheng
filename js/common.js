@@ -6,7 +6,7 @@ var common = {
   getOpenId: function () {
     var openid = window.localStorage.getItem('openid');
     var avatarid = window.localStorage.getItem('avatarid');
-    console.log(openid,avatarid);
+    // console.log(openid,avatarid);
     var that = this;
     if (!openid) {
       openid = +new Date();
@@ -25,5 +25,13 @@ var common = {
     var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
     var r = window.location.search.substr(1).match(reg);
     if (r != null) return unescape(r[2]); return null;
+  },
+  isWechat: function () {
+    var ua = window.navigator.userAgent.toLowerCase();
+    if (ua.match(/MicroMessenger/i) == 'micromessenger') {
+      return true;
+    } else {
+      return false;
+    }
   }
 }

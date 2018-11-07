@@ -5,18 +5,22 @@ $(function () {
   var localId = '';
   var serverId = '';
   var canClick = true;
+  var canSend = true;
   var say = {
     init: function () {
       var that = this;
+      if (!common.isWechat()) {
+        alert('友情提示：此浏览器暂不支持某些功能，请从微信中打开！');
+        return;
+      }
       $.ajax({
         url: ajaxUrl + 'getJsSdkInfo.php',
         type: 'get',
         data: {
-          wx_url: window.location.href
+          wx_url: location.href.split('#')[0]
         },
         success: function (res) {
           var json = JSON.parse(res);
-          // console.log('获取公众号信息', json);
           if (json.code == 200) {
             wx.config({
               debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
@@ -37,7 +41,7 @@ $(function () {
               ] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
             });
             wx.error(function (err) {
-              alert('认证失败了', err);
+              alert('认证失败了', JSON.stringify(err));
             });
 
             wx.ready(function () {
@@ -71,6 +75,8 @@ $(function () {
           if (playTime < 0) {
             clearInterval(timer);
             $('.time').addClass('hide');
+            $('#top_img').attr('src', '../images/luyin.png');
+            $('#zanting').addClass('hide').siblings('#shiting').removeClass('hide');
           } else {
             $('.time').html(playTime);
           }
@@ -98,8 +104,12 @@ $(function () {
       });
       // 发送
       $('#fasong').off('click').on('click', function () {
-        if (!canClick) return;
-        canClick = false;
+        if (time >= 29) {
+          alert('发送的录音时长需大于1秒');
+          return;
+        }
+        if (!canSend) return;
+        canSend = false;
         wx.uploadVoice({
           localId: localId, // 需要上传的音频的本地ID，由stopRecord接口获得
           isShowProgressTips: 1, // 默认为1，显示进度提示
@@ -113,20 +123,35 @@ $(function () {
     },
     start: function (event) {
       event.preventDefault();
-      // $('.tips').text(canClick)
+      var that = this;
       if (!canClick) return;
       canClick = false;
       wx.startRecord({
         success: function () {
-          // $('.tips').html('开始录音');
           time = 30;
           $('.time').removeClass('hide').html(time);
           $('#luyin').addClass('hide').siblings().removeClass('hide');
           $('#top_img').attr('src', '../images/luyin.gif');
           timer = setInterval(function () {
             time--;
-            if (time < 0) {
+            if (time <= 0) {
               clearInterval(timer);
+              wx.stopRecord({
+                success: function (res) {
+                  localId = res.localId;
+                  $('.time').addClass('hide');
+                  $('#top_img').attr('src', '../images/luyin.png');
+                  $('.bottom-bottom').removeClass('hide').siblings().addClass('hide');
+                  canClick = true;
+                },
+                fail: function (err) {
+                  console.log('停止失败', err);
+                  $('.time').addClass('hide');
+                  $('#top_img').attr('src', '../images/luyin.png');
+                  $('.bottom-bottom').removeClass('hide').siblings().addClass('hide');
+                  canClick = true;
+                }
+              });
             } else {
               $('.time').html(time);
             }
@@ -136,8 +161,7 @@ $(function () {
     },
     pause: function (event) {
       event.preventDefault();
-      // $('.tips').text(canClick)
-      if(canClick) return;
+      if (canClick) return;
       wx.stopRecord({
         success: function (res) {
           localId = res.localId;
@@ -147,7 +171,6 @@ $(function () {
           $('.bottom-bottom').removeClass('hide').siblings().addClass('hide');
           clearInterval(timer);
           canClick = true;
-          // $('.tips').text(canClick)
         },
         fail: function (err) {
           console.log('停止失败', err);
@@ -156,7 +179,6 @@ $(function () {
           $('.bottom-bottom').removeClass('hide').siblings().addClass('hide');
           clearInterval(timer);
           canClick = true;
-          // $('.tips').text(canClick)
         }
       });
     },
@@ -172,15 +194,15 @@ $(function () {
           avatarid: window.localStorage.getItem('avatarid'),
         },
         success: function (res) {
-          canClick = true;
-          // $('.tips').html(JSON.stringify(res))
+          canSend = true;
           if (res.code == 200) {
             alert('上传成功！');
             window.history.go(-1);
           }
         },
         error: function (err) {
-          console.log('发送失败', err);
+          canSend = true;
+          alert('上传失败！');
         }
       })
     },
